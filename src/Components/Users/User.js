@@ -1,11 +1,14 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Spinner from '../Layout/Spinner';
 import { Link } from 'react-router-dom';
 import Repos from '../Repos/Repos';
+import GithubContext from '../../Context/Github/githubContext';
 
-const User = ({ user, getUser, getUserRepos, loading, repos }) => {
+const User = () => {
 	const { login } = useParams();
+	const githubContext = useContext(GithubContext);
+	const { getUser, getUserRepos, repos, loading, user } = githubContext;
 	const {
 		name,
 		avatar_url,
@@ -27,8 +30,6 @@ const User = ({ user, getUser, getUserRepos, loading, repos }) => {
 		login && getUserRepos(login);
 		// eslint-disable-next-line
 	}, []);
-
-	user && console.log('props', user);
 
 	if (loading) return <Spinner />;
 	else

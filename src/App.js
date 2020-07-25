@@ -1,112 +1,37 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import './App.css';
 import Navar from './Components/Layout/Navar';
-import UserItem from './Components/Users/UserItem';
-import Users from './Components/Users/Users';
-import axios from 'axios';
-import Search from './Components/Users/Search';
 import Alert from '../src/Components/Layout/Alert';
+import Home from './Components/Pages/Home';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import About from './Components/Pages/About';
 import User from './Components/Users/User';
+import NotFound from './Components/Pages/NotFound';
+
+import GithubState from '../src/Context/Github/GithubState';
+import AlertState from '../src/Context/Alert/AlertState';
 
 const App = () => {
-	const [ users, setUsers ] = useState([]);
-	const [ user, setUser ] = useState({});
-	const [ repos, setRepos ] = useState([]);
-	const [ loading, setLoading ] = useState(false);
-	const [ alert, setAlert ] = useState(null);
-
-	const searchUsers = async (text) => {
-		setLoading(true);
-		const res = await axios.get(
-			`https://api.github.com/search/users?q=${text}&client_id=${process.env
-				.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
-		);
-		setUsers(res.data.items);
-		return setLoading(false);
-	};
-
-	const getUser = async (username) => {
-		setLoading(true);
-		const res = await axios.get(
-			`https://api.github.com/users/${username}?client_id=${process.env
-				.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
-		);
-		setUser(res.data);
-		return setLoading(false);
-	};
-
-	const getUserRepos = async (username) => {
-		setLoading(true);
-		const res = await axios.get(
-			`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env
-				.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
-		);
-		setRepos(res.data);
-		return setLoading(false);
-	};
-
-	const clearUsers = () => {
-		setUsers([]);
-		return setLoading(false);
-	};
-
-	const setAlertHandler = (msg, type) => {
-		setAlert({ msg, type });
-
-		setTimeout(() => {
-			setAlert(null);
-			return setLoading(false);
-		}, 3500);
-	};
-
 	return (
-		<Router>
-			<Fragment>
-				<Navar title='Github Finder' icon={'fab fa-github'} />
+		<GithubState>
+			<AlertState>
+				<Router>
+					<Fragment>
+						<Navar title='Github Finder' icon={'fab fa-github'} />
 
-				<div className='container'>
-					<Alert alert={alert} />
-					<Switch>
-						<Route
-							exact
-							path='/'
-							render={(props) => {
-								return (
-									<Fragment>
-										<Search
-											searchUsers={searchUsers}
-											clearUsers={clearUsers}
-											showClear={users.length > 0}
-											setAlert={setAlertHandler}
-										/>
-										<Users loading={loading} users={users} />
-									</Fragment>
-								);
-							}}
-						/>
-						<Route exact path='/about' component={About} />
-						<Route
-							exact
-							path='/user/:login'
-							render={(props) => {
-								return (
-									<User
-										{...props}
-										getUser={getUser}
-										getUserRepos={getUserRepos}
-										user={user}
-										loading={loading}
-										repos={repos}
-									/>
-								);
-							}}
-						/>
-					</Switch>
-				</div>
-			</Fragment>
-		</Router>
+						<div className='container'>
+							<Alert />
+							<Switch>
+								<Route exact path='/' component={Home} />
+								<Route exact path='/about' component={About} />
+								<Route exact path='/user/:login' component={User} />
+								<Route component={NotFound} />
+							</Switch>
+						</div>
+					</Fragment>
+				</Router>
+			</AlertState>
+		</GithubState>
 	);
 };
 
