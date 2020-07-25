@@ -18,8 +18,8 @@ const UserItem = ({ user }) => {
 	);
 };
 
-// UserItem.PropTypes = {
-// 	user : PropTypes.object.isRequired
-// };
+UserItem.propTypes = {
+	user : PropTypes.object.isRequired
+};
 
 export default UserItem;
