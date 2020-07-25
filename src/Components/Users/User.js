@@ -4,7 +4,7 @@ import Spinner from '../Layout/Spinner';
 import { Link } from 'react-router-dom';
 import Repos from '../Repos/Repos';
 
-const User = ({ user, getUser, getUserRepos, loading , repos}) => {
+const User = ({ user, getUser, getUserRepos, loading, repos }) => {
 	const { login } = useParams();
 	const {
 		name,
@@ -25,6 +25,7 @@ const User = ({ user, getUser, getUserRepos, loading , repos}) => {
 		login && getUser(login);
 		// getUserRepos
 		login && getUserRepos(login);
+		// eslint-disable-next-line
 	}, []);
 
 	user && console.log('props', user);
@@ -87,7 +88,7 @@ const User = ({ user, getUser, getUserRepos, loading , repos}) => {
 					<div className='badge badge-light'>Public Repos: {public_repos}</div>
 					<div className='badge badge-dark'>Public Gists: {public_gists}</div>
 				</div>
-				<Repos repos={repos}/>
+				<Repos repos={repos} />
 			</Fragment>
 		);
 };
